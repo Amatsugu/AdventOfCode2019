@@ -8,9 +8,14 @@ namespace AdventOfCode
 {
 	public static class Utilz
 	{
-		public static int[] ParseIntArray(string dir)
+		public static int[] ParseIntArray(string file)
 		{
-			return File.ReadAllLines(dir).Select(s => int.Parse(s)).ToArray();
+			return File.ReadAllLines(file).Select(s => int.Parse(s)).ToArray();
+		}
+
+		public static int[] ParseIntCsv(string file)
+		{
+			return File.ReadAllText(file).Split(',').Select(s => int.Parse(s)).ToArray();
 		}
 
 	}
