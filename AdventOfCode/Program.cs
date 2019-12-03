@@ -7,6 +7,7 @@ namespace AdventOfCode
 	{
 		static void Main(string[] args)
 		{
+			//Day 1
 			FuelCaluclation.Execute();
 
 			Console.ReadLine();
