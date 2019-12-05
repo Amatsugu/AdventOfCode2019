@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -42,6 +43,8 @@ namespace AdventOfCode.Day2
 
 		public static void Execute()
 		{
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
 			Console.WriteLine("Day 2:");
 			var baseInput = Utilz.ParseIntCsv("Day2/input.csv");
 
@@ -55,6 +58,8 @@ namespace AdventOfCode.Day2
 					if (ExecuteCode(curInput, n, v) == targetOutput)
 					{
 						Console.WriteLine(100 * n + v);
+						stopwatch.Stop();
+						Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
 						return;
 					}
 				}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -23,9 +24,12 @@ namespace AdventOfCode.Day1
 
 		public static void Execute()
 		{
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
 			Console.WriteLine("Day 1:");
 			Console.WriteLine(FuelCaluclation.GetFuelRequirement(Utilz.ParseIntArray("Day1/input.txt")));
-			//Console.WriteLine(GetFuelCost(100756));
+			stopwatch.Stop();
+			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
 		}
 	}
 }
