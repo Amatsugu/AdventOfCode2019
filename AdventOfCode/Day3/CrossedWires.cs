@@ -278,16 +278,9 @@ namespace AdventOfCode.Day3
 
 		public static void Execute()
 		{
-			Console.WriteLine("Day 3");
+			Console.WriteLine("Day 3: Crossed Wires");
 			Stopwatch stopwatch = new Stopwatch();
 			stopwatch.Start();
-			var wires = new string[]
-			{
-				"R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
-				"U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
-			};
-
-			Console.WriteLine(SolveWires(wires));
 			Console.WriteLine(SolveWires(File.ReadAllLines("Day3/input.txt")));
 			stopwatch.Stop();
 			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");

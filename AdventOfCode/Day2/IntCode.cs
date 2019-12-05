@@ -45,7 +45,7 @@ namespace AdventOfCode.Day2
 		{
 			Stopwatch stopwatch = new Stopwatch();
 			stopwatch.Start();
-			Console.WriteLine("Day 2:");
+			Console.WriteLine("Day 2: INT Code");
 			var baseInput = Utilz.ParseIntCsv("Day2/input.csv");
 
 			int targetOutput = 19690720;

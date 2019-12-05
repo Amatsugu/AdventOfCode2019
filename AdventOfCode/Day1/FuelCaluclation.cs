@@ -26,8 +26,8 @@ namespace AdventOfCode.Day1
 		{
 			Stopwatch stopwatch = new Stopwatch();
 			stopwatch.Start();
-			Console.WriteLine("Day 1:");
-			Console.WriteLine(FuelCaluclation.GetFuelRequirement(Utilz.ParseIntArray("Day1/input.txt")));
+			Console.WriteLine("Day 1: Fuel Caluclation");
+			Console.WriteLine(GetFuelRequirement(Utilz.ParseIntArray("Day1/input.txt")));
 			stopwatch.Stop();
 			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
 		}
