@@ -177,7 +177,7 @@ namespace AdventOfCode.Day_5
 		{
 			Stopwatch stopwatch = new Stopwatch();
 			stopwatch.Start();
-			Console.WriteLine("Day 4: INT Code ");
+			Console.WriteLine("Day 5: INT Code ");
 			var baseInput = Utilz.ParseIntCsv("Day5/input.csv");
 			var cpu = new IntCodeV2();
 			cpu.ExecuteCode(baseInput);

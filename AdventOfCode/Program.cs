@@ -3,6 +3,7 @@ using AdventOfCode.Day1;
 using AdventOfCode.Day2;
 using AdventOfCode.Day3;
 using AdventOfCode.Day4;
+using AdventOfCode.Day6;
 using System;
 
 namespace AdventOfCode
@@ -12,16 +13,17 @@ namespace AdventOfCode
 		static void Main(string[] args)
 		{
 			//Day 1
-			FuelCaluclation.Execute();
+			//FuelCaluclation.Execute();
 			//Day 2
-			IntCode.Execute();
+			//IntCode.Execute();
 			//Day 3
-			CrossedWires.Execute();
+			//CrossedWires.Execute();
 			//Day 4
-			SecureContainer.Execute();
+			//SecureContainer.Execute();
 			//Day 5
-			IntCodeV2.Execute();
-
+			//IntCodeV2.Execute();
+			//Day 5
+			OrbitMap.Execute();
 			Console.ReadLine();
 		}
 	}
