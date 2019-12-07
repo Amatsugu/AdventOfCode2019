@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace AdventOfCode.Day6
@@ -52,8 +53,14 @@ namespace AdventOfCode.Day6
 			return root.GetOrbitCount();
 		}
 
-		public int GetDepthOf(string name) => root.GetDepthOf(name);
+		public List<CelestialObject> FindPathTo(string name)
+		{
+			var path = new List<CelestialObject>();
+			root.FindPathTo(name, path);
+			return path;
+		}
 
+		public int GetDepthOf(string name) => root.GetDepth(name);
 
 		public class CelestialObject
 		{
@@ -83,19 +90,36 @@ namespace AdventOfCode.Day6
 				return depth + count;
 			}
 
-			public int GetDepthOf(string name, int depth = 0)
+			public bool FindPathTo(string name, List<CelestialObject> path)
 			{
-				if (Name == name)
-					return depth;
-				else
+				if (name == Name)
+					return true;
+				for (int i = 0; i < ChildCount; i++)
 				{
-					int d = 0;
-					for (int i = 0; i < ChildCount; i++)
+					if(children[i].FindPathTo(name, path))
 					{
-						d += children[i].GetDepthOf(name, depth + 1);
+						path.Add(children[i]);
+						return true;
 					}
-					return d;
 				}
+				return false;
+			}
+
+			public int GetDepth(string name, int depth = 0)
+			{
+				if (name == Name)
+					return depth;
+				var d = 0;
+				for (int i = 0; i < ChildCount; i++)
+				{
+					d += children[i].GetDepth(name, depth + 1);
+				}
+				return d;
+			}
+
+			public override string ToString()
+			{
+				return Name;
 			}
 		}
 
@@ -108,7 +132,36 @@ namespace AdventOfCode.Day6
 
 			var map = new OrbitMap(File.ReadAllLines("Day6/input.txt"));
 
-			Console.WriteLine(map.GetDepthOf("YOU") - map.GetDepthOf("SAN") - 2);
+			var pathToYOU = map.FindPathTo("YOU");
+			var pathToSAN = map.FindPathTo("SAN");
+
+			HashSet<string> pathYOU = new HashSet<string>(pathToYOU.Select(o => o.Name));
+
+			string pivot = "";
+			int dist = 0;
+
+			for (int i = 0; i < pathToSAN.Count; i++)
+			{
+				if(pathYOU.Contains(pathToSAN[i].Name))
+				{
+					pivot = pathToSAN[i].Name;
+					dist = i;
+					break;
+				}
+			}
+			for (int i = 0; i < pathToYOU.Count; i++)
+			{
+				if (pathToYOU[i].Name == pivot)
+				{
+					dist += i;
+					break;
+				}
+			}
+
+			var dist2 = map.objectMap[pivot].GetDepth("YOU") + map.objectMap[pivot].GetDepth("SAN") - 2;
+
+			Console.WriteLine(dist - 2);
+			Console.WriteLine(dist2);
 
 			stopwatch.Stop();
 			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
