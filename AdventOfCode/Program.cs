@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Day1;
+﻿using AdventOfCode.Day_5;
+using AdventOfCode.Day1;
 using AdventOfCode.Day2;
 using AdventOfCode.Day3;
 using AdventOfCode.Day4;
@@ -18,6 +19,8 @@ namespace AdventOfCode
 			CrossedWires.Execute();
 			//Day 4
 			SecureContainer.Execute();
+			//Day 5
+			IntCodeV2.Execute();
 
 			Console.ReadLine();
 		}
