@@ -17,7 +17,7 @@ namespace AdventOfCode.Day4
 
 		public static bool HasRepeating(this int[] password)
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < password.Length - 1; i++)
 			{
 				if (password[i] == password[i + 1])
 					return true;
