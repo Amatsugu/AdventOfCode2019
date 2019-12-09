@@ -26,6 +26,10 @@ namespace AdventOfCode.Day_5
 		private Dictionary<int, Instruction> _instructions;
 		private bool _isHalted;
 		private int _instructionPointer;
+		private int[] _inputBuffer;
+		private int _inputCounter = 0;
+		private int[] _outputBuffer;
+		private int _outputCounter = 0;
 
 		public IntCodeV2()
 		{
@@ -54,23 +58,20 @@ namespace AdventOfCode.Day_5
 			_instructions.Add(99, new Instruction(99, 0, (mem, mode, p1, p2, p3) =>
 			{
 				_isHalted = true;
-				Console.WriteLine("Halt!");
 				return false;
 			}));
 			//Read Input
 			_instructions.Add(3, new Instruction(3, 1, (mem, mode, p1, p2, p3) =>
 			{
 				var v1 = mode[2] == 1 ? mem[p1] : p1;
-				Console.Write("Input: ");
-				var input = int.Parse(Console.ReadLine());
-				mem[v1] = input;
+				mem[v1] = ReadInput();
 				return true;
 			}));
 			//Write Output
 			_instructions.Add(4, new Instruction(4, 1, (mem, mode, p1, p2, p3) =>
 			{
 				var v1 = mode[2] == 1 ? p1 : mem[p1];
-				Console.WriteLine(v1);
+				WriteOutput(v1);
 				return true;
 			}));
 			//Jump if True
@@ -123,9 +124,33 @@ namespace AdventOfCode.Day_5
 			}));
 		}
 
-		public int ExecuteCode(int[] code)
+		private int ReadInput()
 		{
-			int[] memory = code;
+			if (_inputBuffer != null && _inputCounter < _inputBuffer.Length)
+				return _inputBuffer[_inputCounter++];
+			else
+			{
+				Console.Write("Input: ");
+				return int.Parse(Console.ReadLine());
+			}
+		}
+
+		private void WriteOutput(int output)
+		{
+			if (_outputBuffer != null && _outputCounter < _outputBuffer.Length)
+				_outputBuffer[_outputCounter++] = output;
+			else
+				Console.WriteLine(output);
+		}
+
+		public int ExecuteCode(int[] code, int[] input = null, int[] output = null)
+		{
+			int[] memory = new int[code.Length];
+			code.CopyTo(memory, 0);
+			_inputBuffer = input;
+			_outputBuffer = output;
+			_inputCounter = _outputCounter = _instructionPointer = 0;
+			_isHalted = false;
 
 			while (true)
 			{
@@ -149,7 +174,7 @@ namespace AdventOfCode.Day_5
 			}
 		}
 
-		public (int[] opModes, int opcode) ParseInstruction(int instruction)
+		public static (int[] opModes, int opcode) ParseInstruction(int instruction)
 		{
 			var opModes = new int[3];
 			var arr = instruction.ToIntArray();
@@ -180,7 +205,7 @@ namespace AdventOfCode.Day_5
 			Console.WriteLine("Day 5: INT Code ");
 			var baseInput = Utilz.ParseIntCsv("Day5/input.csv");
 			var cpu = new IntCodeV2();
-			cpu.ExecuteCode(baseInput);
+			cpu.ExecuteCode(baseInput, new int[] { 5 });
 
 			stopwatch.Stop();
 			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
