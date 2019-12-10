@@ -23,18 +23,25 @@ namespace AdventOfCode.Day_5
 
 		}
 
+		public bool IsHalted { get; private set; }
+		public bool IsRunning { get; private set; }
+		public bool PersistentMode { get; private set; }
+		public bool SuspendOnWrite { get; private set; }
+
 		private Dictionary<int, Instruction> _instructions;
-		private bool _isHalted;
 		private int _instructionPointer;
 		private int[] _inputBuffer;
 		private int _inputCounter = 0;
 		private int[] _outputBuffer;
 		private int _outputCounter = 0;
+		private int[] memory;
 
-		public IntCodeV2()
+		public IntCodeV2(bool persistentMode = false, bool suspendOnOutput = false)
 		{
 			_instructions = new Dictionary<int, Instruction>();
-			_isHalted = false;
+			PersistentMode = persistentMode;
+			SuspendOnWrite = suspendOnOutput;
+			IsHalted = false;
 			//Add
 			_instructions.Add(1, new Instruction(1, 3, (mem, mode, p1, p2, p3) =>
 			{
@@ -57,7 +64,8 @@ namespace AdventOfCode.Day_5
 			//Halt
 			_instructions.Add(99, new Instruction(99, 0, (mem, mode, p1, p2, p3) =>
 			{
-				_isHalted = true;
+				IsHalted = true;
+				IsRunning = false;
 				return false;
 			}));
 			//Read Input
@@ -72,6 +80,8 @@ namespace AdventOfCode.Day_5
 			{
 				var v1 = mode[2] == 1 ? p1 : mem[p1];
 				WriteOutput(v1);
+				if (SuspendOnWrite)
+					IsRunning = false;
 				return true;
 			}));
 			//Jump if True
@@ -126,6 +136,8 @@ namespace AdventOfCode.Day_5
 
 		private int ReadInput()
 		{
+			Console.WriteLine("Reading Input");
+			_inputCounter = Math.Min(_inputCounter, (_inputBuffer?.Length ?? 1) - 1);
 			if (_inputBuffer != null && _inputCounter < _inputBuffer.Length)
 				return _inputBuffer[_inputCounter++];
 			else
@@ -137,41 +149,19 @@ namespace AdventOfCode.Day_5
 
 		private void WriteOutput(int output)
 		{
+			_outputCounter = Math.Min(_outputCounter, (_outputBuffer?.Length ?? 1) - 1);
 			if (_outputBuffer != null && _outputCounter < _outputBuffer.Length)
 				_outputBuffer[_outputCounter++] = output;
 			else
 				Console.WriteLine(output);
 		}
 
-		public int ExecuteCode(int[] code, int[] input = null, int[] output = null)
+		public void ExecuteCode(int[] code, int[] input = null, int[] output = null)
 		{
-			int[] memory = new int[code.Length];
-			code.CopyTo(memory, 0);
-			_inputBuffer = input;
-			_outputBuffer = output;
-			_inputCounter = _outputCounter = _instructionPointer = 0;
-			_isHalted = false;
-
-			while (true)
-			{
-				var (modes, opcode) = ParseInstruction(memory[_instructionPointer]);
-				var curInstruction = _instructions[opcode];
-				int[] parameters = new int[3];
-				for (int i = 0; i < 3; i++)
-				{
-					if (i >= curInstruction.paramCount)
-						parameters[i] = 0;
-					else
-						parameters[i] = memory[_instructionPointer + i + 1];
-				}
-				
-				if(curInstruction.action(memory, modes, parameters[0], parameters[1], parameters[2]))
-					_instructionPointer += curInstruction.paramCount + 1;
-
-				if (_isHalted)
-					return memory[0];
-			
-			}
+			LoadCode(code);
+			SetIO(input, output);
+			IsHalted = false;
+			Run();
 		}
 
 		public static (int[] opModes, int opcode) ParseInstruction(int instruction)
@@ -195,6 +185,55 @@ namespace AdventOfCode.Day_5
 			}
 
 			return (opModes, opcode);
+		}
+
+		public void ResetIO()
+		{
+			_inputCounter = _outputCounter = 0;
+		}
+
+		public void SetInputIndex(int index)
+		{
+			_inputCounter = index;
+		}
+
+		public void SetIO(int[] inputBuffer, int[] outputBuffer)
+		{
+			ResetIO();
+			_inputBuffer = inputBuffer;
+			_outputBuffer = outputBuffer;
+		}
+
+		public void Run()
+		{
+			IsRunning = true;
+			while (IsRunning)
+			{
+				var (modes, opcode) = ParseInstruction(memory[_instructionPointer]);
+				var curInstruction = _instructions[opcode];
+				int[] parameters = new int[3];
+				for (int i = 0; i < 3; i++)
+				{
+					if (i >= curInstruction.paramCount)
+						parameters[i] = 0;
+					else
+						parameters[i] = memory[_instructionPointer + i + 1];
+				}
+
+				if (curInstruction.action(memory, modes, parameters[0], parameters[1], parameters[2]))
+					_instructionPointer += curInstruction.paramCount + 1;
+
+				if (IsHalted)
+					IsRunning = false;
+			}
+		}
+
+		public IntCodeV2 LoadCode(int[] code)
+		{
+			memory = new int[code.Length];
+			code.CopyTo(memory, 0);
+			_instructionPointer = 0;
+			return this;
 		}
 
 

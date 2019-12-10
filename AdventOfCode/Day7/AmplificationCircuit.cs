@@ -18,25 +18,28 @@ namespace AdventOfCode.Day7
 			var cpu = new IntCodeV2();
 			var code = Utilz.ParseIntCsv("Day7/input.csv");
 
-			var ex1 = new int[] { 3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0 };
-			var ex2 = new int[] { 3,23,3,24,1002,24,10,24,1002,23,-1,23,
-101,5,23,23,1,24,23,23,4,23,99,0,0 };
-			var ex3 = new int[] { 3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0 };
+			var ex1 = new int[] { 3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
+27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5 };
+			var ex2 = new int[] { 3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,
+-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,
+53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10};
 
 
 			int output = int.MinValue;
+			int min = 5;
+			int max = 10;
 
-			for (int i = 0; i < 5; i++)
+			for (int i = min; i < max; i++)
 			{
-				for (int j = 0; j < 5; j++)
+				for (int j = min; j < max; j++)
 				{
-					for (int k = 0; k < 5; k++)
+					for (int k = min; k < max; k++)
 					{
-						for (int l = 0; l < 5; l++)
+						for (int l = min; l < max; l++)
 						{
-							for (int m = 0; m < 5; m++)
+							for (int m = min; m < max; m++)
 							{
-								var result = RunPhase(cpu, code, new int[] { i, j, k, l, m });
+								var result = RunFeedback(ex2, new int[] { i, j, k, l, m });
 								if (output < result)
 								{
 									Console.WriteLine($"{i},{j},{k},{l},{m}");
@@ -48,6 +51,7 @@ namespace AdventOfCode.Day7
 				}
 			}
 			Console.WriteLine($"Puzzle {output}");
+			Console.WriteLine($"Puzzle {RunFeedback(ex2, new int[] { 9, 7, 8, 5, 6 })}");
 			stopwatch.Stop();
 			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
 		}
@@ -74,6 +78,56 @@ namespace AdventOfCode.Day7
 			inputBuffer = new int[] { phaseSettings[4], outputBuffer[0] };
 			cpu.ExecuteCode(code, inputBuffer, outputBuffer);
 			return outputBuffer[0];
+		}
+
+		public static int RunFeedback(int[] code, int[] phaseSettings)
+		{
+			if (phaseSettings.HasDuplicateValues())
+				return int.MinValue;
+			var ampA = new IntCodeV2(true, true).LoadCode(code);
+			var ampB = new IntCodeV2(true, true).LoadCode(code);
+			var ampC = new IntCodeV2(true, true).LoadCode(code);
+			var ampD = new IntCodeV2(true, true).LoadCode(code);
+			var ampE = new IntCodeV2(true, true).LoadCode(code);
+			var outputA = new int[] { 0 };
+			var outputB = new int[] { 0 };
+			var outputC = new int[] { 0 };
+			var outputD = new int[] { 0 };
+			var outputE = new int[] { 0 };
+			var inputA = new int[] { phaseSettings[0], outputE[0] };
+			var inputB = new int[] { phaseSettings[1], outputA[0] };
+			var inputC = new int[] { phaseSettings[2], outputB[0] };
+			var inputD = new int[] { phaseSettings[3], outputC[0] };
+			var inputE = new int[] { phaseSettings[4], outputD[0] };
+			ampA.SetIO(inputA, outputA);
+			ampB.SetIO(inputB, outputB);
+			ampC.SetIO(inputC, outputC);
+			ampD.SetIO(inputD, outputD);
+			ampE.SetIO(inputE, outputE);
+			int iter = 0;
+			while (!ampE.IsHalted)
+			{
+				inputA[1] = outputE[0];
+				inputB[1] = outputA[0];
+				inputC[1] = outputB[0];
+				inputD[1] = outputC[0];
+				inputE[1] = outputD[0];
+
+				ampA.Run();
+				ampB.Run();
+				ampC.Run();
+				ampD.Run();
+				ampE.Run();
+
+				/*ampA.ResetIO();
+				ampB.ResetIO();
+				ampC.ResetIO();
+				ampD.ResetIO();
+				ampE.ResetIO();*/
+				iter++;
+			}
+
+			return outputE[0];
 		}
 
 		public static bool HasDuplicateValues(this int[] arr)
