@@ -39,7 +39,7 @@ namespace AdventOfCode.Day7
 						{
 							for (int m = min; m < max; m++)
 							{
-								var result = RunFeedback(ex2, new int[] { i, j, k, l, m });
+								var result = RunFeedback(code, new int[] { i, j, k, l, m });
 								if (output < result)
 								{
 									Console.WriteLine($"{i},{j},{k},{l},{m}");
@@ -51,7 +51,6 @@ namespace AdventOfCode.Day7
 				}
 			}
 			Console.WriteLine($"Puzzle {output}");
-			Console.WriteLine($"Puzzle {RunFeedback(ex2, new int[] { 9, 7, 8, 5, 6 })}");
 			stopwatch.Stop();
 			Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms Elapsed");
 		}
@@ -89,7 +88,7 @@ namespace AdventOfCode.Day7
 			var ampC = new IntCodeV2(true, true).LoadCode(code);
 			var ampD = new IntCodeV2(true, true).LoadCode(code);
 			var ampE = new IntCodeV2(true, true).LoadCode(code);
-			var outputA = new int[] { 0 };
+			var outputA = new int[] { 273 };
 			var outputB = new int[] { 0 };
 			var outputC = new int[] { 0 };
 			var outputD = new int[] { 0 };
@@ -107,23 +106,21 @@ namespace AdventOfCode.Day7
 			int iter = 0;
 			while (!ampE.IsHalted)
 			{
+				//Console.WriteLine($"Iteration {iter}");
 				inputA[1] = outputE[0];
-				inputB[1] = outputA[0];
-				inputC[1] = outputB[0];
-				inputD[1] = outputC[0];
-				inputE[1] = outputD[0];
 
 				ampA.Run();
+				inputB[1] = outputA[0];
 				ampB.Run();
+				inputC[1] = outputB[0];
 				ampC.Run();
+				inputD[1] = outputC[0];
 				ampD.Run();
+				inputE[1] = outputD[0];
 				ampE.Run();
 
-				/*ampA.ResetIO();
-				ampB.ResetIO();
-				ampC.ResetIO();
-				ampD.ResetIO();
-				ampE.ResetIO();*/
+
+				//Console.WriteLine($"Output {outputE[0]}");
 				iter++;
 			}
 

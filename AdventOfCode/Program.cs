@@ -5,6 +5,7 @@ using AdventOfCode.Day3;
 using AdventOfCode.Day4;
 using AdventOfCode.Day6;
 using AdventOfCode.Day7;
+using AdventOfCode.Day8;
 using System;
 
 namespace AdventOfCode
@@ -22,11 +23,13 @@ namespace AdventOfCode
 			//Day 4
 			//SecureContainer.Execute();
 			//Day 5
-			IntCodeV2.Execute();
+			//IntCodeV2.Execute();
 			//Day 6
 			//OrbitMap.Execute();
 			//Day 7
-			AmplificationCircuit.Execute();
+			//AmplificationCircuit.Execute();
+			//Day 8
+			SpaceImageFormat.Execute();
 			Console.ReadLine();
 		}
 	}

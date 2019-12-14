@@ -73,6 +73,7 @@ namespace AdventOfCode.Day_5
 			{
 				var v1 = mode[2] == 1 ? mem[p1] : p1;
 				mem[v1] = ReadInput();
+				//Console.WriteLine($"Input Read: {mem[v1]}");
 				return true;
 			}));
 			//Write Output
@@ -136,7 +137,6 @@ namespace AdventOfCode.Day_5
 
 		private int ReadInput()
 		{
-			Console.WriteLine("Reading Input");
 			_inputCounter = Math.Min(_inputCounter, (_inputBuffer?.Length ?? 1) - 1);
 			if (_inputBuffer != null && _inputCounter < _inputBuffer.Length)
 				return _inputBuffer[_inputCounter++];

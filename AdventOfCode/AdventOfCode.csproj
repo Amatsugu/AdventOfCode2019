@@ -13,6 +13,7 @@
     <None Remove="Day6\input.txt" />
     <None Remove="Day6\test.txt" />
     <None Remove="Day7\input.csv" />
+    <None Remove="Day8\input.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,10 +38,19 @@
     <EmbeddedResource Include="Day7\input.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Day8\input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Day8\" />
+    <Folder Include="Day10\" />
+    <Folder Include="Day11\" />
+    <Folder Include="Day12\" />
+    <Folder Include="Day13\" />
+    <Folder Include="Day14\" />
+    <Folder Include="Day15\" />
+    <Folder Include="Day16\" />
   </ItemGroup>
 
 </Project>
